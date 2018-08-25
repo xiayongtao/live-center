@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.happok.xiyan.livecenter.mapper.ChannelPreviewMapper">
+
+    <insert id="insertPreview" parameterType="com.happok.xiyan.livecenter.entity.ChannelPreviewEntity" keyColumn="id"
+            keyProperty="id" useGeneratedKeys="true">
+        insert into channel_preview
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channel_id != null">
+                channel_id,
+            </if>
+            <if test="stream_name != null">
+                stream_name,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="stream_url != null">
+                stream_url,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channel_id != null">
+                #{channel_id},
+            </if>
+            <if test="stream_name != null">
+                #{stream_name},
+            </if>
+            <if test="type != null">
+                #{type},
+            </if>
+            <if test="stream_url != null">
+                #{stream_url},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getPreviews" resultType="com.happok.xiyan.livecenter.entity.ChannelPreviewEntity">
+        select * from channel_preview where channel_id=#{channel_id}
+    </select>
+
+    <delete id="deletePreview">
+        delete  from channel_preview where channel_id=#{channel_id}
+    </delete>
+
+    <delete id="deleteChannel">
+        delete from channels where id=#{id}
+    </delete>
+
+
+</mapper>

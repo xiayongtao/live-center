@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.happok.xiyan.livecenter.mapper.ActivityMapper">
+
+    <insert id="insertActivity" parameterType="com.happok.xiyan.livecenter.entity.ActivityEntity" keyColumn="id"
+            keyProperty="id" useGeneratedKeys="true">
+        insert into activitys
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="channel_id != null">
+                channel_id,
+            </if>
+            <if test="transcode != null">
+                transcode,
+            </if>
+            <if test="activity_status != null">
+                activity_status,
+            </if>
+            <if test="broadcast_status != null">
+                broadcast_status,
+            </if>
+            <if test="target_url != null">
+                target_url,
+            </if>
+            <if test="source_url != null">
+                source_url,
+            </if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="channel_id != null">
+                #{channel_id},
+            </if>
+            <if test="transcode != null">
+                #{transcode},
+            </if>
+            <if test="activity_status != null">
+                #{activity_status},
+            </if>
+            <if test="broadcast_status != null">
+                #{broadcast_status},
+            </if>
+            <if test="target_url != null">
+                #{target_url},
+            </if>
+            <if test="source_url != null">
+                #{source_url},
+            </if>
+            now()
+        </trim>
+    </insert>
+
+    <update id="updateActivity" parameterType="com.happok.xiyan.livecenter.entity.ActivityEntity">
+        update activitys
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">name=#{name},</if>
+            <if test="channel_id!=null">channel_id=#{channel_id},</if>
+            <if test="transcode!=null">transcode=#{transcode},</if>
+            <if test="activity_status!=null">activity_status=#{activity_status},</if>
+            <if test="broadcast_status!=null">broadcast_status=#{broadcast_status},</if>
+            <if test="broadcast_url!=null">broadcast_url=#{broadcast_url},</if>
+            <if test="target_url!=null">target_url=#{target_url},</if>
+            <if test="source_url!=null">source_url=#{source_url},</if>
+            update_time=now()
+        </trim>
+        where id=#{id}
+    </update>
+
+    <select id="getActivitys" resultType="com.happok.xiyan.livecenter.entity.ActivityEntity">
+        select * from activitys
+    </select>
+
+    <select id="getActivityByStatus" resultType="String">
+        SELECT a.id,
+        a.name,
+        a.channel_id,
+        a.transcode,
+        a.activity_status,
+        a.broadcast_status,
+        a.create_time,
+        a.update_time,
+        a.target_url,
+        a.broadcast_url,
+        b.stream_url AS source_url
+        FROM activitys a,channels b
+        WHERE a.channel_id = b.id and a.id=#{id}
+        <if test="status != null">
+            and a.activity_status in
+            <foreach collection="status" item="id" index="index"
+                     open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getActivity" resultType="com.happok.xiyan.livecenter.entity.ActivityEntity">
+        SELECT a.id,
+              a.name,
+              a.channel_id,
+              a.transcode,
+              a.activity_status,
+              a.broadcast_status,
+              a.create_time,
+              a.update_time,
+              a.target_url,
+              a.broadcast_url,
+              b.stream_url       AS source_url
+        FROM activitys a,channels b
+        WHERE a.channel_id = b.id and a.id=#{id}
+    </select>
+
+    <select id="getBroadcastsByStatus" resultType="com.happok.xiyan.livecenter.entity.ActivityEntity">
+        SELECT a.id,
+        a.name,
+        a.channel_id,
+        a.transcode,
+        a.activity_status,
+        a.broadcast_status,
+        a.create_time,
+        a.update_time,
+        a.target_url,
+        a.broadcast_url,
+        b.stream_url AS source_url
+        FROM activitys a,channels b
+        WHERE a.channel_id = b.id
+        <if test="status != null">
+            and a.broadcast_status = #{status}
+        </if>
+    </select>
+
+    <select id="getActivitysByStatus" resultType="com.happok.xiyan.livecenter.entity.ActivityEntity">
+        SELECT a.id,
+              a.name,
+              a.channel_id,
+              a.transcode,
+              a.activity_status,
+              a.broadcast_status,
+              a.create_time,
+              a.update_time,
+              a.target_url,
+              a.broadcast_url,
+              b.stream_url       AS source_url
+        FROM activitys a,channels b
+        WHERE a.channel_id = b.id and a.activity_status='start'
+    </select>
+
+
+    <select id="getActivityNoStatus" resultType="com.happok.xiyan.livecenter.entity.ActivityEntity">
+        SELECT a.id,
+              a.name,
+              a.channel_id,
+              a.transcode,
+              a.activity_status,
+              a.broadcast_status,
+              a.create_time,
+              a.update_time,
+              a.target_url,
+              a.broadcast_url,
+              b.stream_url       AS source_url
+        FROM activitys a,channels b
+        WHERE a.channel_id = b.id and a.id=#{id} and a.activity_status != #{status}
+    </select>
+
+
+    <delete id="deleteActivity">
+        delete from activitys where id=#{id}
+    </delete>
+
+    <!--查询id是否存在-->
+    <select id="isExistsId" resultType="Integer">
+        SELECT
+          IFNULL((SELECT 1 FROM activitys WHERE id=#{id}), 0)
+    </select>
+
+    <select id="getActivityEntityByStatus" resultType="com.happok.xiyan.livecenter.entity.ActivityEntity">
+        SELECT a.id,
+              a.name,
+              a.channel_id,
+              a.transcode,
+              a.activity_status,
+              a.broadcast_status,
+              a.create_time,
+              a.update_time,
+              a.target_url,
+              a.broadcast_url,
+              b.stream_url       AS source_url
+        FROM activitys a,channels b
+        WHERE a.channel_id = b.id and a.id=#{id} and a.activity_status = #{status}
+    </select>
+
+
+</mapper>

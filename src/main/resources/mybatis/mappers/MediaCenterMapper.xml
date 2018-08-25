@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.happok.xiyan.livecenter.mapper.MediaCenterMapper">
+
+    <insert id="CreateMediaCenter" parameterType="com.happok.xiyan.livecenter.entity.MediaCenterEntity" keyColumn="id"
+            keyProperty="id" useGeneratedKeys="true">
+        insert into mediaservice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="server_ip != null">
+                server_ip,
+            </if>
+            <if test="port != null">
+                port,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="server_ip != null">
+                #{server_ip},
+            </if>
+            <if test="port != null">
+                #{port},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            now()
+        </trim>
+    </insert>
+
+    <update id="updateMediaCenter" parameterType="com.happok.xiyan.livecenter.entity.MediaCenterEntity">
+        update mediaservice
+        <trim prefix="set" suffixOverrides=",">
+            <if test="server_ip!=null">server_ip=#{server_ip},</if>
+            <if test="port!=null">port=#{port},</if>
+            <if test="status!=null">status=#{status},</if>
+            update_time=now()
+        </trim>
+        where id=#{id}
+    </update>
+
+    <select id="getMediaCenters" resultType="com.happok.xiyan.livecenter.entity.MediaCenterEntity">
+        select  id,name,server_ip,port,status,update_time from mediaservice
+    </select>
+
+    <select id="getMediaCenter" resultType="com.happok.xiyan.livecenter.entity.MediaCenterEntity">
+        select id,name,server_ip,port,status,update_time from mediaservice where id=#{id}
+    </select>
+
+    <select id="getOnlineCenter" resultType="Integer">
+        select id from mediaservice where status='online' limit 1
+    </select>
+
+    <delete id="deleteMediaCenter">
+        delete from mediaservice where id=#{id}
+    </delete>
+
+
+</mapper>
